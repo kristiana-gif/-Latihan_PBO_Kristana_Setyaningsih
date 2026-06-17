@@ -2,11 +2,11 @@
 /**
  * FILE: classes/TiketRegular.php
  * FUNGSI: Subclass untuk tiket studio REGULAR
- * 
  * Mewarisi (extends) dari abstract class Tiket
+ * 
+ * TAHAP 5: Method Overriding untuk hitungTotalHarga() dan tampilkanInfoFasilitas()
  */
 
-// Include parent class
 require_once 'Tiket.php';
 
 class TiketRegular extends Tiket
@@ -25,7 +25,7 @@ class TiketRegular extends Tiket
      */
     public function __construct($id_tiket, $nama_film, $jadwal_tayang, $jumlah_kursi, $hargaDasarTiket, $tipeAudio, $lokasiBaris)
     {
-        // Panggil constructor parent (Tiket) untuk inisialisasi properti induk
+        // Panggil constructor parent (Tiket)
         parent::__construct($id_tiket, $nama_film, $jadwal_tayang, $jumlah_kursi, $hargaDasarTiket);
         
         // Assign properti tambahan
@@ -47,7 +47,7 @@ class TiketRegular extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD hitungTotalHarga()
+     * OVERRIDE METHOD hitungTotalHarga()
      * Sesuai soal: Total Harga = jumlah_kursi * hargaDasarTiket
      * (Tarif standar murni tanpa biaya tambahan fasilitas)
      */
@@ -57,17 +57,19 @@ class TiketRegular extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD tampilkanInfoFasilitas()
+     * OVERRIDE METHOD tampilkanInfoFasilitas()
      * Menampilkan fasilitas khusus studio Regular
      */
     public function tampilkanInfoFasilitas()
     {
-        echo "<ul style='list-style:none; padding-left:0; margin:5px 0;'>";
-        echo "<li>🎵 <strong>Tipe Audio:</strong> " . ($this->tipeAudio ?: '-') . "</li>";
-        echo "<li>💺 <strong>Lokasi Baris:</strong> " . ($this->lokasiBaris ?: '-') . "</li>";
-        echo "<li>📺 <strong>Layar:</strong> Standar</li>";
-        echo "<li>🔊 <strong>Sound System:</strong> Surround Sound</li>";
-        echo "</ul>";
+        echo "<div style='background:#f0f8f0; padding:10px; border-radius:5px; border-left:4px solid #4CAF50;'>";
+        echo "<strong>🎵 Tipe Audio:</strong> " . ($this->tipeAudio ?: 'Standar') . "<br>";
+        echo "<strong>💺 Lokasi Baris:</strong> " . ($this->lokasiBaris ?: 'Tidak tersedia') . "<br>";
+        echo "<strong>📺 Jenis Layar:</strong> Standar<br>";
+        echo "<strong>🔊 Sound System:</strong> Surround Sound 5.1<br>";
+        echo "<strong>💺 Kursi:</strong> Standar<br>";
+        echo "<strong>💵 Biaya Tambahan:</strong> Tidak ada (tarif murni)<br>";
+        echo "</div>";
     }
 }
 ?>

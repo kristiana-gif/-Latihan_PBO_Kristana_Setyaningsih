@@ -2,11 +2,11 @@
 /**
  * FILE: classes/TiketVelvet.php
  * FUNGSI: Subclass untuk tiket studio VELVET (Premium)
- * 
  * Mewarisi (extends) dari abstract class Tiket
+ * 
+ * TAHAP 5: Method Overriding untuk hitungTotalHarga() dan tampilkanInfoFasilitas()
  */
 
-// Include parent class
 require_once 'Tiket.php';
 
 class TiketVelvet extends Tiket
@@ -47,7 +47,7 @@ class TiketVelvet extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD hitungTotalHarga()
+     * OVERRIDE METHOD hitungTotalHarga()
      * Sesuai soal: Total Harga = (jumlah_kursi * hargaDasarTiket) * 1.50
      * (Surcharge 50% dari total harga dasar)
      */
@@ -57,18 +57,19 @@ class TiketVelvet extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD tampilkanInfoFasilitas()
+     * OVERRIDE METHOD tampilkanInfoFasilitas()
      * Menampilkan fasilitas khusus studio Velvet (Premium)
      */
     public function tampilkanInfoFasilitas()
     {
-        echo "<ul style='list-style:none; padding-left:0; margin:5px 0;'>";
-        echo "<li>🛏️ <strong>Bantal & Selimut:</strong> " . ($this->bantalSelimutPack ?: '-') . "</li>";
-        echo "<li>🤵 <strong>Layanan Butler:</strong> " . ($this->layananButler ?: '-') . "</li>";
-        echo "<li>🛋️ <strong>Kursi:</strong> Recliner Premium</li>";
-        echo "<li>🍽️ <strong>Makanan:</strong> In-seat dining service</li>";
-        echo "<li>💰 <strong>Surcharge:</strong> 50% dari harga dasar</li>";
-        echo "</ul>";
+        echo "<div style='background:#f5e8ff; padding:10px; border-radius:5px; border-left:4px solid #9C27B0;'>";
+        echo "<strong>🛏️ Bantal & Selimut Pack:</strong> " . ($this->bantalSelimutPack ?: 'Tidak tersedia') . "<br>";
+        echo "<strong>🤵 Layanan Butler:</strong> " . ($this->layananButler ?: 'Tidak tersedia') . "<br>";
+        echo "<strong>🛋️ Jenis Kursi:</strong> Recliner Premium Velvet<br>";
+        echo "<strong>🍽️ Makanan & Minuman:</strong> In-seat dining service<br>";
+        echo "<strong>📺 Layar:</strong> Layar Premium 4K<br>";
+        echo "<strong>💵 Biaya Tambahan:</strong> Surcharge 50% (Kelas Premium)<br>";
+        echo "</div>";
     }
 }
 ?>

@@ -2,11 +2,11 @@
 /**
  * FILE: classes/TiketIMAX.php
  * FUNGSI: Subclass untuk tiket studio IMAX
- * 
  * Mewarisi (extends) dari abstract class Tiket
+ * 
+ * TAHAP 5: Method Overriding untuk hitungTotalHarga() dan tampilkanInfoFasilitas()
  */
 
-// Include parent class
 require_once 'Tiket.php';
 
 class TiketIMAX extends Tiket
@@ -47,7 +47,7 @@ class TiketIMAX extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD hitungTotalHarga()
+     * OVERRIDE METHOD hitungTotalHarga()
      * Sesuai soal: Total Harga = (jumlah_kursi * hargaDasarTiket) + 35000
      * (Dikenakan biaya tambahan teknologi proyeksi layar lebar IMAX Rp35.000)
      */
@@ -57,18 +57,19 @@ class TiketIMAX extends Tiket
     }
     
     /**
-     * IMPLEMENTASI ABSTRACT METHOD tampilkanInfoFasilitas()
+     * OVERRIDE METHOD tampilkanInfoFasilitas()
      * Menampilkan fasilitas khusus studio IMAX
      */
     public function tampilkanInfoFasilitas()
     {
-        echo "<ul style='list-style:none; padding-left:0; margin:5px 0;'>";
-        echo "<li>🕶️ <strong>Kacamata 3D:</strong> " . ($this->kacamata3dId ?: '-') . "</li>";
-        echo "<li>🎬 <strong>Efek Gerak:</strong> " . ($this->efekGerakFitur ?: '-') . "</li>";
-        echo "<li>📽️ <strong>Layar:</strong> Raksasa IMAX</li>";
-        echo "<li>🔊 <strong>Sound System:</strong> IMAX 12-channel</li>";
-        echo "<li>💰 <strong>Biaya Tambahan:</strong> Rp 35.000 (Teknologi IMAX)</li>";
-        echo "</ul>";
+        echo "<div style='background:#e8f4fd; padding:10px; border-radius:5px; border-left:4px solid #2196F3;'>";
+        echo "<strong>🕶️ Kacamata 3D ID:</strong> " . ($this->kacamata3dId ?: 'Tidak tersedia') . "<br>";
+        echo "<strong>🎬 Efek Gerak Fitur:</strong> " . ($this->efekGerakFitur ?: 'Tidak tersedia') . "<br>";
+        echo "<strong>📽️ Jenis Layar:</strong> Layar Raksasa IMAX<br>";
+        echo "<strong>🔊 Sound System:</strong> IMAX 12-channel Audio<br>";
+        echo "<strong>💺 Kursi:</strong> Premium dengan Efek Gerak<br>";
+        echo "<strong>💵 Biaya Tambahan:</strong> Rp 35.000 (Teknologi IMAX)<br>";
+        echo "</div>";
     }
 }
 ?>
