@@ -2,8 +2,7 @@
 /**
  * FILE: index.php
  * FUNGSI: Halaman utama untuk menampilkan daftar tiket penonton beserta Dashboard Analytics
- * 
- * TAHAP 6: Menampilkan data tiket yang dikelompokkan per jenis studio
+ * * TAHAP 6: Menampilkan data tiket yang dikelompokkan per jenis studio
  */
 
 // Include koneksi database
@@ -128,13 +127,10 @@ function getStudioIcon($studio)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Manajemen Tiket Bioskop</title>
     
-    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
@@ -263,17 +259,24 @@ function getStudioIcon($studio)
             padding: 12px;
         }
 
+        /* PERBAIKAN CRITICAL: Memaksa teks apapun di dalam box fasilitas agar berwarna terang */
         .fasilitas-box {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             padding: 14px 16px;
             border-radius: 12px;
             font-size: 0.88rem;
-            color: #cbd5e1;
+            color: #f8fafc !important; /* Memaksa warna teks utama putih terang */
             border-left: 3px solid var(--accent-gold);
+            line-height: 1.5;
+        }
+        
+        /* Memaksa elemen turunan teks di dalam box fasilitas tetap putih dan jelas */
+        .fasilitas-box, .fasilitas-box *, .fasilitas-box p, .fasilitas-box span, .fasilitas-box div {
+            color: #f8fafc !important;
         }
         
         .fasilitas-box i {
-            color: var(--accent-gold);
+            color: var(--accent-gold) !important; /* Ikon fasilitas tetap berwarna emas agar aesthetic */
             margin-right: 8px;
         }
         
@@ -293,7 +296,6 @@ function getStudioIcon($studio)
 <body>
     
     <div class="container py-5">
-        <!-- HERO HEADER -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="hero-section text-white">
@@ -320,9 +322,7 @@ function getStudioIcon($studio)
             </div>
         </div>
 
-        <!-- ================= ANALYTICS DASHBOARD PANELS ================= -->
         <div class="row g-4 mb-5">
-            <!-- Widget 1: Total Omset -->
             <div class="col-6 col-lg-3">
                 <div class="widget-card d-flex align-items-center gap-3">
                     <div class="widget-icon-box bg-warning bg-opacity-10 text-warning">
@@ -334,7 +334,6 @@ function getStudioIcon($studio)
                     </div>
                 </div>
             </div>
-            <!-- Widget 2: Total Tiket -->
             <div class="col-6 col-lg-3">
                 <div class="widget-card d-flex align-items-center gap-3">
                     <div class="widget-icon-box bg-primary bg-opacity-10 text-primary">
@@ -346,7 +345,6 @@ function getStudioIcon($studio)
                     </div>
                 </div>
             </div>
-            <!-- Widget 3: Total Kursi -->
             <div class="col-6 col-lg-3">
                 <div class="widget-card d-flex align-items-center gap-3">
                     <div class="widget-icon-box bg-success bg-opacity-10 text-success">
@@ -358,7 +356,6 @@ function getStudioIcon($studio)
                     </div>
                 </div>
             </div>
-            <!-- Widget 4: Kelas Favorit -->
             <div class="col-6 col-lg-3">
                 <div class="widget-card d-flex align-items-center gap-3">
                     <div class="widget-icon-box bg-danger bg-opacity-10 text-danger">
@@ -371,14 +368,11 @@ function getStudioIcon($studio)
                 </div>
             </div>
         </div>
-        <!-- ============================================================== -->
         
-        <!-- TAMPILAN DATA PER STUDIO -->
         <?php foreach (['Regular', 'IMAX', 'Velvet'] as $studio): ?>
             <?php if (!empty($tikets[$studio])): ?>
                 <div class="row mb-5">
                     <div class="col-12">
-                        <!-- Header Studio -->
                         <div class="studio-title-box">
                             <h3 class="mb-0 fw-bold fs-4 d-flex align-items-center">
                                 <span class="studio-indicator indicator-<?= strtolower($studio) ?>"></span>
@@ -392,29 +386,25 @@ function getStudioIcon($studio)
                             </small>
                         </div>
                         
-                        <!-- Cards Tiket -->
                         <div class="row g-4">
                             <?php foreach ($tikets[$studio] as $tiket): ?>
                                 <div class="col-md-6 col-lg-4">
                                     <div class="card card-tiket card-<?= strtolower($studio) ?> h-100">
                                         <div class="card-body d-flex flex-column p-4">
                                             
-                                            <!-- Top Row Item -->
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <span class="badge badge-id px-2.5 py-1.5 rounded-3" style="font-size: 0.75rem;">
                                                     <i class="fas fa-fingerprint me-1"></i>ID: <?= $tiket->getIdTiket() ?>
                                                 </span>
-                                                <span class="text-uppercase fw-bold text-muted-custom" style="font-size: 0.7rem; letter-spacing: 1.5px;">
+                                                <span class="text-uppercase fw-bold text-muted-custom" style="font-size: 0.7 centrifugalrem; letter-spacing: 1.5px;">
                                                     <?= $studio ?> Class
                                                 </span>
                                             </div>
                                             
-                                            <!-- Judul Film -->
                                             <h5 class="card-title film-title mb-3">
                                                 <?= htmlspecialchars($tiket->getNamaFilm()) ?>
                                             </h5>
                                             
-                                            <!-- Meta Details -->
                                             <div class="mb-4 text-muted-custom" style="font-size: 0.8rem;">
                                                 <div class="d-flex flex-wrap gap-3">
                                                     <span><i class="fa-regular fa-calendar me-1.5 text-white-50"></i><?= date('d M Y', strtotime($tiket->getJadwalTayang())) ?></span>
@@ -423,7 +413,6 @@ function getStudioIcon($studio)
                                                 </div>
                                             </div>
                                             
-                                            <!-- Ticket Price Stub (Pushed To Bottom) -->
                                             <div class="ticket-stub-price mt-auto mb-3">
                                                 <div class="row align-items-center">
                                                     <div class="col-6 border-end border-secondary border-opacity-25">
@@ -439,7 +428,6 @@ function getStudioIcon($studio)
                                                 </div>
                                             </div>
                                             
-                                            <!-- Polimorfik Tampilan Informasi Fasilitas -->
                                             <div class="fasilitas-box">
                                                 <?php $tiket->tampilkanInfoFasilitas(); ?>
                                             </div>
@@ -454,7 +442,6 @@ function getStudioIcon($studio)
             <?php endif; ?>
         <?php endforeach; ?>
         
-        <!-- FOOTER -->
         <div class="footer-custom">
             <div class="row g-4 text-center text-md-start">
                 <div class="col-md-4">
@@ -487,7 +474,6 @@ function getStudioIcon($studio)
         </div>
     </div>
     
-    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
 </body>
