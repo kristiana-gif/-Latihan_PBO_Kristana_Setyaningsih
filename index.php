@@ -4,10 +4,6 @@
  * FUNGSI: Halaman utama untuk menampilkan daftar tiket penonton
  * 
  * TAHAP 6: Menampilkan data tiket yang dikelompokkan per jenis studio
- * - Mengambil data dari database
- * - Instansiasi objek sesuai jenis_studio
- * - Menampilkan dalam tabel HTML yang rapi
- * - Memanggil method polimorfik: hitungTotalHarga() dan tampilkanInfoFasilitas()
  */
 
 // Include koneksi database
@@ -25,7 +21,7 @@ function formatRupiah($angka)
     return 'Rp ' . number_format($angka, 0, ',', '.');
 }
 
-// Ambil semua data dari database, urutkan berdasarkan jenis studio
+// Ambil semua data dari database
 $stmt = $pdo->query("SELECT * FROM tabel_tiket ORDER BY 
                      FIELD(jenis_studio, 'Regular', 'IMAX', 'Velvet'), 
                      id_tiket");
@@ -115,11 +111,10 @@ function getStudioIcon($studio)
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Font Awesome 6 (untuk icon) -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Custom CSS tambahan */
         .studio-header {
             padding: 15px 20px;
             border-radius: 10px;
@@ -155,20 +150,6 @@ function getStudioIcon($studio)
         .fasilitas-box i {
             width: 25px;
             color: #6c757d;
-        }
-        
-        .total-harga {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .total-harga-imax {
-            color: #007bff;
-        }
-        
-        .total-harga-velvet {
-            color: #dc3545;
         }
         
         .card-tiket {
@@ -338,7 +319,7 @@ function getStudioIcon($studio)
                 <div class="col-md-4">
                     <h6><i class="fas fa-database me-2"></i>Database</h6>
                     <small class="text-muted">
-                        <?= $dbname ?? 'DB_LATIHAN_PBO_TRPL1B' ?>
+                        db_latihan_pbo_trpl1b_kristiana_setyaningsih
                     </small>
                 </div>
             </div>
