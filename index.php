@@ -1,8 +1,9 @@
 <?php
 /**
  * FILE: index.php
- * FUNGSI: Halaman utama untuk menampilkan daftar tiket penonton
- * * TAHAP 6: Menampilkan data tiket yang dikelompokkan per jenis studio
+ * FUNGSI: Halaman utama untuk menampilkan daftar tiket penonton beserta Dashboard Analytics
+ * 
+ * TAHAP 6: Menampilkan data tiket yang dikelompokkan per jenis studio
  */
 
 // Include koneksi database
@@ -32,6 +33,10 @@ $tikets = [
     'IMAX' => [],
     'Velvet' => []
 ];
+
+// Variabel bantuan untuk Dashboard Statistik
+$totalPendapatan = 0;
+$totalKursiTerjual = 0;
 
 // Loop data dan buat objek sesuai jenis studio
 foreach ($dataTiket as $row) {
@@ -75,6 +80,22 @@ foreach ($dataTiket as $row) {
             $tikets['Velvet'][] = $tiket;
             break;
     }
+    
+    // Hitung total pendapatan & kursi secara dinamis untuk dashboard
+    if (isset($tiket)) {
+        $totalPendapatan += $tiket->hitungTotalHarga();
+        $totalKursiTerjual += $row['jumlah_kursi'];
+    }
+}
+
+// Menentukan studio terfavorit berdasarkan jumlah tiket terjual
+$maxTiket = 0;
+$studioTerlaris = '-';
+foreach ($tikets as $namaStudio => $listTiket) {
+    if (count($listTiket) > $maxTiket) {
+        $maxTiket = count($listTiket);
+        $studioTerlaris = $namaStudio;
+    }
 }
 
 // Fungsi untuk mendapatkan warna badge
@@ -107,17 +128,19 @@ function getStudioIcon($studio)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Manajemen Tiket Bioskop</title>
     
+    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg-main: #0b0f19;
             --bg-card: #151c2c;
-            --bg-input: #1e2640;
             --text-muted: #94a3b8;
             --accent-gold: #ffb800;
         }
@@ -129,9 +152,9 @@ function getStudioIcon($studio)
             overflow-x: hidden;
         }
         
-        /* Glassmorphism Hero Header */
+        /* Hero Header */
         .hero-section {
-            background: radial-gradient(circle at top right, rgba(255, 184, 0, 0.15), transparent), 
+            background: radial-gradient(circle at top right, rgba(255, 184, 0, 0.12), transparent), 
                         linear-gradient(135deg, #151c2c, #0b0f19);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 24px;
@@ -145,6 +168,28 @@ function getStudioIcon($studio)
             background: linear-gradient(45deg, #ffffff, #ffb800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* Dashboard Summary Widget Cards */
+        .widget-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+        }
+        .widget-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .widget-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
         }
 
         /* Studio Category Headers */
@@ -205,14 +250,12 @@ function getStudioIcon($studio)
             letter-spacing: -0.5px;
         }
         
-        /* Neon Badges */
         .badge-id {
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-muted);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Pricing Area styled like an admission ticket stub */
         .ticket-stub-price {
             background: rgba(255, 255, 255, 0.02);
             border: 1px dashed rgba(255, 255, 255, 0.1);
@@ -220,7 +263,6 @@ function getStudioIcon($studio)
             padding: 12px;
         }
 
-        /* Polymorphic Facilities Section */
         .fasilitas-box {
             background: rgba(255, 255, 255, 0.03);
             padding: 14px 16px;
@@ -235,7 +277,6 @@ function getStudioIcon($studio)
             margin-right: 8px;
         }
         
-        /* Futuristic Footer */
         .footer-custom {
             margin-top: 80px;
             padding: 40px;
@@ -252,23 +293,19 @@ function getStudioIcon($studio)
 <body>
     
     <div class="container py-5">
-        <div class="row mb-5">
+        <!-- HERO HEADER -->
+        <div class="row mb-4">
             <div class="col-12">
                 <div class="hero-section text-white">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-4">
                         <div>
                             <span class="badge mb-2 text-uppercase tracking-wider" style="background: rgba(255,184,0,0.1); color: var(--accent-gold); font-size: 0.75rem; font-weight:700; padding: 6px 12px; border-radius: 20px;">
-                                <i class="fas fa-circle-play me-1"></i> Live Cinema Dashboard
+                                <i class="fas fa-chart-line me-1"></i> Admin Cinema Core System
                             </span>
-                            <h1 class="display-6 main-title mb-2">
+                            <h1 class="display-6 main-title mb-1">
                                 Manajemen Tiket Bioskop
                             </h1>
-                            <div class="d-flex flex-wrap gap-2 mt-3" style="font-size: 0.85rem;">
-                                <span class="badge badge-id py-2 px-3">Total Data: <strong><?= count($dataTiket) ?></strong></span>
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 py-2 px-3">Regular (<?= count($tikets['Regular']) ?>)</span>
-                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-2 px-3">IMAX (<?= count($tikets['IMAX']) ?>)</span>
-                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 py-2 px-3">Velvet (<?= count($tikets['Velvet']) ?>)</span>
-                            </div>
+                            <p class="text-muted-custom mb-0 small">Sistem Pemantauan Data Penjualan dan Polimorfisme Kelas Tiket</p>
                         </div>
                         <div>
                             <div class="p-3 text-center rounded-4 border" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05) !important; min-width: 160px;">
@@ -282,11 +319,66 @@ function getStudioIcon($studio)
                 </div>
             </div>
         </div>
+
+        <!-- ================= ANALYTICS DASHBOARD PANELS ================= -->
+        <div class="row g-4 mb-5">
+            <!-- Widget 1: Total Omset -->
+            <div class="col-6 col-lg-3">
+                <div class="widget-card d-flex align-items-center gap-3">
+                    <div class="widget-icon-box bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted-custom d-block mb-1" style="font-size: 0.8rem;">Total Pendapatan</small>
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.15rem;"><?= formatRupiah($totalPendapatan) ?></h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 2: Total Tiket -->
+            <div class="col-6 col-lg-3">
+                <div class="widget-card d-flex align-items-center gap-3">
+                    <div class="widget-icon-box bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted-custom d-block mb-1" style="font-size: 0.8rem;">Tiket Terbit</small>
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.15rem;"><?= count($dataTiket) ?> <span class="text-muted fw-normal" style="font-size: 0.8rem;">Data</span></h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 3: Total Kursi -->
+            <div class="col-6 col-lg-3">
+                <div class="widget-card d-flex align-items-center gap-3">
+                    <div class="widget-icon-box bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted-custom d-block mb-1" style="font-size: 0.8rem;">Okupansi Kursi</small>
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.15rem;"><?= $totalKursiTerjual ?> <span class="text-muted fw-normal" style="font-size: 0.8rem;">Kursi</span></h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 4: Kelas Favorit -->
+            <div class="col-6 col-lg-3">
+                <div class="widget-card d-flex align-items-center gap-3">
+                    <div class="widget-icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted-custom d-block mb-1" style="font-size: 0.8rem;">Studio Terlaris</small>
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.15rem;">Studio <?= $studioTerlaris ?></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
         
+        <!-- TAMPILAN DATA PER STUDIO -->
         <?php foreach (['Regular', 'IMAX', 'Velvet'] as $studio): ?>
             <?php if (!empty($tikets[$studio])): ?>
                 <div class="row mb-5">
                     <div class="col-12">
+                        <!-- Header Studio -->
                         <div class="studio-title-box">
                             <h3 class="mb-0 fw-bold fs-4 d-flex align-items-center">
                                 <span class="studio-indicator indicator-<?= strtolower($studio) ?>"></span>
@@ -300,12 +392,14 @@ function getStudioIcon($studio)
                             </small>
                         </div>
                         
+                        <!-- Cards Tiket -->
                         <div class="row g-4">
                             <?php foreach ($tikets[$studio] as $tiket): ?>
                                 <div class="col-md-6 col-lg-4">
                                     <div class="card card-tiket card-<?= strtolower($studio) ?> h-100">
                                         <div class="card-body d-flex flex-column p-4">
                                             
+                                            <!-- Top Row Item -->
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <span class="badge badge-id px-2.5 py-1.5 rounded-3" style="font-size: 0.75rem;">
                                                     <i class="fas fa-fingerprint me-1"></i>ID: <?= $tiket->getIdTiket() ?>
@@ -315,10 +409,12 @@ function getStudioIcon($studio)
                                                 </span>
                                             </div>
                                             
+                                            <!-- Judul Film -->
                                             <h5 class="card-title film-title mb-3">
                                                 <?= htmlspecialchars($tiket->getNamaFilm()) ?>
                                             </h5>
                                             
+                                            <!-- Meta Details -->
                                             <div class="mb-4 text-muted-custom" style="font-size: 0.8rem;">
                                                 <div class="d-flex flex-wrap gap-3">
                                                     <span><i class="fa-regular fa-calendar me-1.5 text-white-50"></i><?= date('d M Y', strtotime($tiket->getJadwalTayang())) ?></span>
@@ -327,6 +423,7 @@ function getStudioIcon($studio)
                                                 </div>
                                             </div>
                                             
+                                            <!-- Ticket Price Stub (Pushed To Bottom) -->
                                             <div class="ticket-stub-price mt-auto mb-3">
                                                 <div class="row align-items-center">
                                                     <div class="col-6 border-end border-secondary border-opacity-25">
@@ -342,6 +439,7 @@ function getStudioIcon($studio)
                                                 </div>
                                             </div>
                                             
+                                            <!-- Polimorfik Tampilan Informasi Fasilitas -->
                                             <div class="fasilitas-box">
                                                 <?php $tiket->tampilkanInfoFasilitas(); ?>
                                             </div>
@@ -356,6 +454,7 @@ function getStudioIcon($studio)
             <?php endif; ?>
         <?php endforeach; ?>
         
+        <!-- FOOTER -->
         <div class="footer-custom">
             <div class="row g-4 text-center text-md-start">
                 <div class="col-md-4">
@@ -378,7 +477,7 @@ function getStudioIcon($studio)
                     </small>
                 </div>
             </div>
-            <hr class="my-4 rgba(255,255,255,0.05)" style="border-color: rgba(255,255,255,0.05) !important;">
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.05) !important;">
             <div class="text-center">
                 <small class="text-muted-custom" style="font-size: 0.8rem;">
                     <i class="fas fa-graduation-cap me-1"></i>
@@ -388,6 +487,7 @@ function getStudioIcon($studio)
         </div>
     </div>
     
+    <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
 </body>
